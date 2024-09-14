@@ -29,18 +29,18 @@ app.use(methodOverride('_method'))
 app.get('/', checkAuthenticated, (req, res) => {
     res.render('index.ejs', { name: req.user.name })
   })
-app.get('/login',checkNotAuthenticated,(req,res)=>{
+app.get('views/login',checkNotAuthenticated,(req,res)=>{
     res.render('login.ejs')
 })
-app.post('/login',checkNotAuthenticated ,passport.authenticate('local',{
+app.post('views/login',checkNotAuthenticated ,passport.authenticate('local',{
   successRedirect:'/',
-  failureRedirect:'/login',
+  failureRedirect:'views/login',
   failureFlash: true   
 }))
-app.get('/register',checkNotAuthenticated,(req,res)=>{
+app.get('views/register',checkNotAuthenticated,(req,res)=>{
     res.render('register.ejs')
 })
-app.post('/register',checkNotAuthenticated, async(req,res)=>{
+app.post('views/register',checkNotAuthenticated, async(req,res)=>{
  try{
   const hashedPassword=await bcrypt.hash.req.hash(req.body.password,10)
   users.push({
@@ -49,10 +49,10 @@ app.post('/register',checkNotAuthenticated, async(req,res)=>{
       email:req.body.email,
       password:hashedPassword
   })
-  res.redirect('/login')
+  res.redirect('views/login')
 }
  catch{
-  res.redirect('/register')
+  res.redirect('views/register')
  }
 console.log(users)
 })
@@ -61,7 +61,7 @@ function checkAuthenticated(req,res,next){
     if(req.isAuthenticated()){
         return next()
     }
-    res.redirect('/login')
+    res.redirect('views/login')
 }
 function checkNotAuthenticated(req,res,next){
     if(req.isAuthenticated()){
@@ -69,9 +69,9 @@ function checkNotAuthenticated(req,res,next){
     }
     next()
 }
-app.delete('/login',(req,res)=>{
+app.delete('views/login',(req,res)=>{
     req.logOut()
-    res.redirect('/login')
+    res.redirect('views/login')
 })
 app.listen(process.env.PORT || 3000, function(){
   console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
